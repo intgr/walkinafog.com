@@ -36,8 +36,8 @@ define [
         @audio = new Next.utils.AudioManager("audio/walk_in_a_fog.mp3", @onSoundLoaded)
 
         $("body").mousemove (e) =>
-          maxW = document.width
-          maxH = document.height
+          maxW = document.body.clientWidth
+          maxH = document.body.clientHeight
           dx = e.pageX
           dy = e.pageY
           @mouse.x = dx / maxW - 0.5
