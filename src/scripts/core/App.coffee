@@ -33,7 +33,7 @@ define [
         super
 
         $("#container canvas").fadeOut(0)
-        @audio = new Next.utils.AudioManager("audio/walk_in_a_fog.mp3", @onSoundLoaded)
+        @audio = new Next.utils.AudioManager("audio/walk_in_a_fog.ogg", @onSoundLoaded)
 
         $("body").mousemove (e) =>
           maxW = document.width

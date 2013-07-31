@@ -7,7 +7,7 @@ define [
   namespace "Next.utils",
     AudioManager: class AudioManager
       # Inspired by https://github.com/unconed/ThreeAudio.js
-      constructor: (mp3Url, @onLoadedCallback) ->
+      constructor: (audioUrl, @onLoadedCallback) ->
         @fftSize = 512
         @filters = {}
         @playing = true
@@ -97,7 +97,7 @@ define [
             mid: new Uint8Array(256)
             treble: new Uint8Array(256)
 
-        @load(mp3Url)
+        @load(audioUrl)
 
       update: () =>
         @analyser.smoothingTimeConstant = 0
