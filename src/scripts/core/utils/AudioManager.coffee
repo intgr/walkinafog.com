@@ -14,7 +14,10 @@ define [
         @now = 0.0
         @timeDelay = 0.0
 
-        @context = new webkitAudioContext()
+        if window.AudioContext
+          @context = new AudioContext()
+        else
+          @context = new webkitAudioContext()
 
         # create analyser
         @analyser = @context.createAnalyser()
@@ -51,17 +54,17 @@ define [
           filter.analyser.fftSize = @fftSize
 
           # create delay to compensate fftSize lag
-          filter.delayNode = @context.createDelayNode()
+          filter.delayNode = @context.createDelay()
           filter.delayNode.delayTime.value = 0
 
           # create gain node to offset filter loss
-          filter.gainNode = @context.createGainNode()
+          filter.gainNode = @context.createGain()
           filter.gainNode.gain.value = spec.gain
 
           @filters[key] = filter
 
         # create delay to compensate fftSize lag
-        @delay = @context.createDelayNode()
+        @delay = @context.createDelay()
         @delay.delayTime.value = @fftSize * 2 / @context.sampleRate
 
         # connect audio processing pipe
@@ -70,7 +73,7 @@ define [
 
         volume = false
         if volume
-          gain2 = @context.createGainNode()
+          gain2 = @context.createGain()
           @delay.connect(gain2)
           gain2.gain.value = 0.00
           gain2.connect(@context.destination)
@@ -121,10 +124,12 @@ define [
         request.responseType = "arraybuffer"
 
         request.onload = () =>
-          @buffer = @context.createBuffer(request.response, false)
-          @source.buffer = @buffer
-          @source.loop = false
-          @play()
+          @context.decodeAudioData(request.response,
+            (buffer) =>
+              @buffer = @source.buffer = buffer
+              @source.loop = false
+              @play()
+          )
 
         request.send()
 
@@ -139,7 +144,7 @@ define [
 
       pause: () =>
         if @source
-          @source.noteOff(0)
+          @source.stop(0)
           @source.disconnect(0)
           @source = false
         @playing = false
@@ -150,8 +155,7 @@ define [
         if !@source
           @source = @createSound()
         if @source.buffer
-          #@source.noteOn(0)
-          @source.noteGrainOn(0, @now, @buffer.duration - @now)
+          @source.start(0, @now, @buffer.duration - @now)
         if @onLoadedCallback then @onLoadedCallback()
 
       rms: (data) =>
