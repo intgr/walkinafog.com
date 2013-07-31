@@ -22,7 +22,7 @@ head
     window.highQuality = false;
     window.userColor = 0x3366ff;
 
-    var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+    var has_webaudio = !! (window.AudioContext || window.webkitAudioContext);
     var has_webgl = ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )();
 
     require.config({baseUrl : 'scripts'});
@@ -165,7 +165,7 @@ head
           $("#credits").stop().fadeIn(400);
         });
 
-        if (is_chrome == false) {
+        if (has_webaudio == false) {
           $("#loader_wrapper").append('<div id="message">We are sorry, but it appears that your browser is not supported. Please <a href="http://www.google.com/chrome/">download Google Chrome</a> and try launching this again. If you are unable to install a new browser, you can try downloading the <a href="http://www.google.com/chromeframe/">Google Chrome frame plugin</a> instead.<hr/>' + txt + '</div>');
           $("header, h1, h2, #loader_wrapper, footer").css("opacity", 1.0);
           $("body").addClass("error");
